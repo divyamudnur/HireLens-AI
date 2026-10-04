@@ -1,0 +1,32 @@
+# SQLite Database
+*.db
+*.sqlite
+*.sqlite3
+database/hirelens.db
+
+# Uploaded Files
+uploads/resumes/*
+!uploads/resumes/.gitkeep
+
+# Python Cache & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+
+# IDE & OS Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary / Debug / Secrets files
+.env
+*.env
+secrets
+*.log
+test_*.py
+scratch/
