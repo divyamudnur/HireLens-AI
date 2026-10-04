@@ -31,18 +31,18 @@ apply_hirelens_theme()
 init_session_state()
 
 def render_login_page():
-    # Vertical pleasant spacing
+    # Spacing for vertical centering
     st.write("")
     st.write("")
 
-    _, auth_col, _ = st.columns([1, 1.25, 1])
+    _, auth_col, _ = st.columns([1, 1.15, 1])
     with auth_col:
         st.markdown(
             """
-            <div class="auth-container">
-                <div class="auth-logo-badge">🎯</div>
-                <div class="auth-title">HireLens AI</div>
-                <div class="auth-tagline">Intelligent AI Recruitment Platform</div>
+            <div style="text-align: center; margin-bottom: 1.2rem;">
+                <div style="display: inline-flex; align-items: center; justify-content: center; width: 62px; height: 62px; background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%); border-radius: 20px; font-size: 2rem; box-shadow: 0 10px 25px -4px rgba(99, 102, 241, 0.45); margin-bottom: 0.8rem;">🎯</div>
+                <div style="font-family: 'Manrope', sans-serif; font-size: 1.9rem; font-weight: 800; background: linear-gradient(135deg, #1E1B4B 0%, #4338CA 50%, #EC4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.2;">HireLens AI</div>
+                <div style="font-size: 0.9rem; color: #64748B; font-weight: 600; margin-top: 4px;">Intelligent AI Recruitment Platform</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -81,9 +81,10 @@ def render_login_page():
                         st.error(msg)
 
         st.markdown(
-            '<div style="text-align:center;margin-top:0.8rem;">'
-            '<span class="auth-trust-badge">🔒 100% Local & Encrypted · Zero Cloud Leakage</span>'
-            '</div>',
+            '<div style="text-align: center; margin-top: 1rem;">'
+            '<span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.76rem; font-weight: 700; color: #059669; background: #ECFDF5; padding: 6px 14px; border-radius: 20px; border: 1px solid #A7F3D0; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">'
+            '🔒 100% Local & Encrypted · Zero Cloud Leakage'
+            '</span></div>',
             unsafe_allow_html=True,
         )
 

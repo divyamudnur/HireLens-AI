@@ -18,7 +18,6 @@ def apply_hirelens_theme() -> None:
             --ink-dark: #0F172A;
             --ink-muted: #64748B;
             --border-soft: #E2E8F0;
-            --bg-card: #FFFFFF;
         }
 
         html, body, [class*="css"], .stMarkdown, p, span, label, input, button, select, textarea {
@@ -29,9 +28,9 @@ def apply_hirelens_theme() -> None:
         /* Ambient vibrant background */
         .stApp {
             background: 
-                radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 45%),
-                radial-gradient(circle at 85% 15%, rgba(236, 72, 153, 0.10) 0%, transparent 45%),
-                radial-gradient(circle at 50% 85%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.14) 0%, transparent 40%),
+                radial-gradient(circle at 90% 10%, rgba(236, 72, 153, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 50% 90%, rgba(6, 182, 212, 0.10) 0%, transparent 45%),
                 #F8FAFC !important;
             color: var(--ink-dark);
         }
@@ -43,7 +42,7 @@ def apply_hirelens_theme() -> None:
 
         [data-testid="stAppViewContainer"] .main .block-container {
             max-width: 1200px;
-            padding-top: 2rem;
+            padding-top: 1.5rem;
             padding-bottom: 3.5rem;
         }
 
@@ -54,120 +53,48 @@ def apply_hirelens_theme() -> None:
         }
 
         /* -------------------------------------------------------------
-           PERFECT CENTERED SQUARE LOGIN CARD
+           VIBRANT FORM & CARD STYLING
         ------------------------------------------------------------- */
-        .auth-container {
-            max-width: 430px;
-            margin: 1.5rem auto 2rem auto;
-            background: #FFFFFF;
-            border-radius: 24px;
-            border: 1.5px solid rgba(224, 231, 255, 0.9);
+        [data-testid="stForm"] {
+            background: #FFFFFF !important;
+            border-radius: 22px !important;
+            border: 1.5px solid #E0E7FF !important;
             box-shadow: 
-                0 20px 40px -15px rgba(99, 102, 241, 0.18),
-                0 0 0 1px rgba(99, 102, 241, 0.06),
-                0 1px 3px rgba(0, 0, 0, 0.04);
-            padding: 2.2rem 2.2rem 1.8rem 2.2rem;
-            text-align: center;
+                0 20px 40px -12px rgba(99, 102, 241, 0.16),
+                0 1px 3px rgba(0, 0, 0, 0.04) !important;
+            padding: 1.8rem 1.8rem 1.6rem 1.8rem !important;
             position: relative;
-            overflow: hidden;
         }
 
-        .auth-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 6px;
-            background: linear-gradient(90deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%);
-        }
-
-        .auth-logo-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 58px;
-            height: 58px;
-            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%);
-            border-radius: 18px;
-            font-size: 1.9rem;
-            box-shadow: 0 8px 20px -4px rgba(99, 102, 241, 0.45);
-            margin: 0 auto 0.8rem auto;
-        }
-
-        .auth-title {
-            font-family: 'Manrope', sans-serif !important;
-            font-size: 1.75rem !important;
-            font-weight: 800 !important;
-            margin: 0 0 0.25rem 0 !important;
-            background: linear-gradient(135deg, #1E1B4B 0%, #4338CA 50%, #7C3AED 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            line-height: 1.2 !important;
-        }
-
-        .auth-tagline {
-            font-size: 0.88rem;
-            color: #64748B;
-            margin: 0 0 1.2rem 0;
-            font-weight: 500;
-        }
-
-        .auth-trust-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.76rem;
-            font-weight: 600;
-            color: #059669;
-            background: #ECFDF5;
-            padding: 5px 12px;
-            border-radius: 20px;
-            border: 1px solid #A7F3D0;
-            margin-top: 1.2rem;
-        }
-
-        /* -------------------------------------------------------------
-           MODERN TABS (Color Accents & Smooth Highlight)
-        ------------------------------------------------------------- */
-        [data-testid="stTabs"] [data-baseweb="tab-list"] {
-            gap: 6px;
-            background: #F1F5F9;
-            padding: 5px;
-            border-radius: 14px;
-            border: 1px solid #E2E8F0;
-            margin-bottom: 1.2rem;
-            width: 100%;
-        }
-
-        [data-testid="stTabs"] button[role="tab"] {
-            height: 42px;
-            border-radius: 10px !important;
+        /* Form labels */
+        [data-testid="stForm"] label,
+        [data-testid="stWidgetLabel"] p {
+            font-size: 0.86rem !important;
             font-weight: 700 !important;
-            font-size: 0.92rem !important;
-            color: #64748B !important;
-            background: transparent !important;
-            border: none !important;
-            flex: 1;
-            padding: 0 14px !important;
+            color: #334155 !important;
+        }
+
+        /* Form input fields */
+        [data-baseweb="input"] {
+            border-radius: 12px !important;
+            border: 1.5px solid #CBD5E1 !important;
+            background: #F8FAFC !important;
             transition: all 0.2s ease !important;
         }
 
-        [data-testid="stTabs"] button[role="tab"]:hover {
-            color: #4F46E5 !important;
-            background: rgba(255, 255, 255, 0.7) !important;
-        }
-
-        [data-testid="stTabs"] button[aria-selected="true"] {
+        [data-baseweb="input"]:focus-within {
+            border-color: #6366F1 !important;
+            box-shadow: 0 0 0 3.5px rgba(99, 102, 241, 0.18) !important;
             background: #FFFFFF !important;
-            color: #4F46E5 !important;
-            box-shadow: 0 2px 8px -1px rgba(79, 70, 229, 0.2), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
         }
 
         /* -------------------------------------------------------------
-           VIBRANT BUTTONS & FORM INPUTS
+           VIBRANT PRIMARY ACTION BUTTONS
         ------------------------------------------------------------- */
-        .stButton > button, .stFormSubmitButton > button {
+        [data-testid="stFormSubmitButton"] button, 
+        .stFormSubmitButton > button,
+        [data-testid="stBaseButton-primary"],
+        .stButton > button {
             background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%) !important;
             color: #FFFFFF !important;
             font-weight: 700 !important;
@@ -175,38 +102,72 @@ def apply_hirelens_theme() -> None:
             border-radius: 12px !important;
             border: none !important;
             padding: 0.65rem 1.4rem !important;
-            min-height: 2.85rem !important;
-            box-shadow: 0 6px 18px -2px rgba(99, 102, 241, 0.38) !important;
+            min-height: 2.9rem !important;
+            box-shadow: 0 6px 20px -2px rgba(99, 102, 241, 0.45) !important;
             transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
             width: 100% !important;
         }
 
-        .stButton > button:hover, .stFormSubmitButton > button:hover {
+        [data-testid="stFormSubmitButton"] button:hover, 
+        .stFormSubmitButton > button:hover,
+        .stButton > button:hover {
             transform: translateY(-2px) !important;
-            box-shadow: 0 10px 24px -3px rgba(99, 102, 241, 0.5) !important;
-            filter: brightness(1.05);
+            box-shadow: 0 10px 28px -3px rgba(99, 102, 241, 0.6) !important;
+            filter: brightness(1.08) !important;
         }
 
-        .stButton > button:active, .stFormSubmitButton > button:active {
+        [data-testid="stFormSubmitButton"] button:active,
+        .stButton > button:active {
             transform: translateY(0px) !important;
         }
 
-        .stTextInput > div > div > input,
-        .stTextArea > div > div > textarea,
-        .stSelectbox > div > div {
-            border-radius: 12px !important;
-            border: 1.5px solid #CBD5E1 !important;
-            background: #FFFFFF !important;
-            color: #0F172A !important;
-            font-size: 0.92rem !important;
-            padding: 0.6rem 0.9rem !important;
+        [data-testid="stFormSubmitButton"] button p,
+        .stButton > button p {
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.01em;
+        }
+
+        /* -------------------------------------------------------------
+           COLORFUL TABS (Pills with Smooth Highlight)
+        ------------------------------------------------------------- */
+        [data-testid="stTabs"] [data-baseweb="tab-list"] {
+            gap: 6px;
+            background: #EEF2FF;
+            padding: 5px;
+            border-radius: 14px;
+            border: 1px solid #E0E7FF;
+            margin-bottom: 1.1rem;
+            width: 100%;
+        }
+
+        [data-testid="stTabs"] button[role="tab"] {
+            height: 40px;
+            border-radius: 10px !important;
+            font-weight: 700 !important;
+            font-size: 0.9rem !important;
+            color: #64748B !important;
+            background: transparent !important;
+            border: none !important;
+            flex: 1;
+            padding: 0 12px !important;
             transition: all 0.2s ease !important;
         }
 
-        .stTextInput > div > div > input:focus,
-        .stTextArea > div > div > textarea:focus {
-            border-color: #6366F1 !important;
-            box-shadow: 0 0 0 3.5px rgba(99, 102, 241, 0.16) !important;
+        [data-testid="stTabs"] button[role="tab"]:hover {
+            color: #4F46E5 !important;
+            background: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        [data-testid="stTabs"] button[aria-selected="true"] {
+            background: #FFFFFF !important;
+            color: #4F46E5 !important;
+            box-shadow: 0 2px 10px -1px rgba(99, 102, 241, 0.25) !important;
+        }
+
+        [data-testid="stTabs"] button[aria-selected="true"] p {
+            color: #4F46E5 !important;
+            font-weight: 800 !important;
         }
 
         /* -------------------------------------------------------------
@@ -325,7 +286,7 @@ def apply_hirelens_theme() -> None:
 
         /* Progress bar */
         [data-testid="stProgressBar"] > div > div {
-            background: linear-gradient(90deg, #4F46E5 0%, #7C3AED 50%, #06B6D4 100%) !important;
+            background: linear-gradient(90deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%) !important;
             border-radius: 99px !important;
         }
 
