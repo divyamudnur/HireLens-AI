@@ -11,6 +11,8 @@ from auth.roles import (
 )
 from candidate.candidate_dashboard import render_candidate_dashboard
 from employer.employer_dashboard import render_employer_dashboard
+from utils.ui import apply_hirelens_theme
+from html import escape
 
 # Ensure database is initialized automatically
 initialize_database()
@@ -23,75 +25,67 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for polished UI
-st.markdown("""
-<style>
-    .main-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: #1E293B;
-        margin-bottom: 0.5rem;
-    }
-    .sub-title {
-        color: #64748B;
-        font-size: 1rem;
-        margin-bottom: 1.5rem;
-    }
-    .stButton > button {
-        border-radius: 8px;
-        font-weight: 600;
-    }
-    .user-badge {
-        background-color: #E2E8F0;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #334155;
-    }
-</style>
-""", unsafe_allow_html=True)
+apply_hirelens_theme()
 
 # Initialize Session State
 init_session_state()
 
 def render_login_page():
-    st.markdown('<div class="main-title">🎯 HireLens AI</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-title">Role-Based AI Recruitment Platform</div>', unsafe_allow_html=True)
+    # Vertical pleasant spacing
+    st.write("")
+    st.write("")
 
-    tab1, tab2 = st.tabs(["🔐 Login", "📝 Register"])
+    _, auth_col, _ = st.columns([1, 1.25, 1])
+    with auth_col:
+        st.markdown(
+            """
+            <div class="auth-container">
+                <div class="auth-logo-badge">🎯</div>
+                <div class="auth-title">HireLens AI</div>
+                <div class="auth-tagline">Intelligent AI Recruitment Platform</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-    with tab1:
-        st.subheader("Login to your account")
-        with st.form("login_form", clear_on_submit=False):
-            email = st.text_input("Email Address", placeholder="e.g. john@example.com")
-            password = st.text_input("Password", type="password", placeholder="••••••••")
-            submit = st.form_submit_button("Log In", use_container_width=True)
+        tab1, tab2 = st.tabs(["🔐 Sign In", "✨ Create Account"])
 
-            if submit:
-                user, msg = login_user(email, password)
-                if user:
-                    login_session(user)
-                    st.success(msg)
-                    st.rerun()
-                else:
-                    st.error(msg)
+        with tab1:
+            with st.form("login_form", clear_on_submit=False):
+                email = st.text_input("Email Address", placeholder="you@example.com")
+                password = st.text_input("Password", type="password", placeholder="Enter your password")
+                submit = st.form_submit_button("🚀 Sign In to Workspace", use_container_width=True)
 
-    with tab2:
-        st.subheader("Create a new account")
-        with st.form("register_form", clear_on_submit=True):
-            name = st.text_input("Full Name", placeholder="e.g. Jane Doe")
-            email = st.text_input("Email Address", placeholder="e.g. jane@example.com")
-            password = st.text_input("Password (min 6 chars)", type="password", placeholder="••••••••")
-            role = st.selectbox("I am a:", options=["Candidate", "Employer"])
-            submit = st.form_submit_button("Register", use_container_width=True)
+                if submit:
+                    user, msg = login_user(email, password)
+                    if user:
+                        login_session(user)
+                        st.success(msg)
+                        st.rerun()
+                    else:
+                        st.error(msg)
 
-            if submit:
-                success, msg = register_user(name, email, password, role.lower())
-                if success:
-                    st.success(msg)
-                else:
-                    st.error(msg)
+        with tab2:
+            with st.form("register_form", clear_on_submit=True):
+                name = st.text_input("Full Name", placeholder="e.g. Jane Doe")
+                email = st.text_input("Email Address", placeholder="you@example.com")
+                password = st.text_input("Password (min 6 chars)", type="password", placeholder="Create a password")
+                role = st.selectbox("I am joining as", options=["Candidate", "Employer"])
+                submit = st.form_submit_button("🌟 Create Account", use_container_width=True)
+
+                if submit:
+                    success, msg = register_user(name, email, password, role.lower())
+                    if success:
+                        st.success(msg)
+                    else:
+                        st.error(msg)
+
+        st.markdown(
+            '<div style="text-align:center;margin-top:0.8rem;">'
+            '<span class="auth-trust-badge">🔒 100% Local & Encrypted · Zero Cloud Leakage</span>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
 
 def main():
     if not is_authenticated():
@@ -102,10 +96,11 @@ def main():
 
         # Sidebar user section
         with st.sidebar:
-            st.title("🎯 HireLens AI")
-            st.markdown(f"**User:** {user['name']}")
-            st.markdown(f"**Email:** {user['email']}")
-            st.markdown(f"**Role:** `{role.upper()}`")
+            st.markdown('<div class="hl-brand">◉ &nbsp; HireLens AI</div>', unsafe_allow_html=True)
+            st.caption("AI talent matching")
+            st.markdown(f"### {escape(str(user['name']))}")
+            st.caption(escape(str(user['email'])))
+            st.markdown(f"**{role.title()} workspace**")
             st.markdown("---")
             if st.button("🚪 Log Out", use_container_width=True):
                 logout_session()

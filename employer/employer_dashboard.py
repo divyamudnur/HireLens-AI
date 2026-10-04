@@ -1,4 +1,5 @@
 import streamlit as st
+from html import escape
 from auth.roles import get_current_user
 from jobs.job_manager import (
     create_job,
@@ -7,6 +8,7 @@ from jobs.job_manager import (
     update_application_status,
     get_application_match_details
 )
+from utils.ui import score_visual, skill_chips
 
 # Colour map for recommendation badges
 _REC_COLOURS = {
@@ -26,7 +28,7 @@ _SEV_COLOURS = {
 def _badge(label: str, colour: str) -> str:
     return (
         f'<span style="background:{colour};color:#fff;padding:2px 10px;'
-        f'border-radius:12px;font-size:0.82rem;font-weight:700;">{label}</span>'
+        f'border-radius:12px;font-size:0.82rem;font-weight:700;">{escape(str(label))}</span>'
     )
 
 
@@ -43,7 +45,7 @@ def _render_why_this_candidate(match_info: dict, candidate_name: str) -> None:
     recommendation = rec.get("recommendation", "N/A")
     rec_colour = _REC_COLOURS.get(recommendation, "#6b7280")
 
-    st.markdown("#### 🧠 Why This Candidate?")
+    st.markdown("#### 🧠 Why this candidate?")
 
     col_a, col_b, col_c = st.columns([2, 2, 2])
     with col_a:
@@ -52,18 +54,19 @@ def _render_why_this_candidate(match_info: dict, candidate_name: str) -> None:
             unsafe_allow_html=True
         )
     with col_b:
-        st.metric("Overall Match", f"{rec.get('overall_score', 0.0)}%")
+        st.metric("Overall match", f"{rec.get('overall_score', 0.0)}%")
     with col_c:
-        st.metric("Critical Skill Coverage", f"{rec.get('critical_coverage', 0.0)}%")
+        st.metric("Required skill coverage", f"{rec.get('critical_coverage', 0.0)}%")
 
     # Resume quality indicator
     if quality:
         qlevel = quality.get("level", "UNKNOWN")
         qicon  = quality.get("icon", "")
         st.markdown(
-            f"**Resume Quality:** {qicon} `{qlevel}` "
-            f"({quality.get('word_count', 0)} words, "
-            f"{quality.get('skill_count', 0)} skills detected)"
+            f'<div class="hl-panel"><strong>📄 Resume quality</strong><br>'
+            f'<span>{escape(str(qicon))} {escape(str(qlevel))}</span> · '
+            f'{quality.get("word_count", 0)} words · {quality.get("skill_count", 0)} skills detected</div>',
+            unsafe_allow_html=True,
         )
         if quality.get("warning"):
             st.warning(quality["warning"])
@@ -129,8 +132,12 @@ def render_employer_dashboard():
         st.error("User session expired. Please log in again.")
         return
 
-    st.title("💼 Employer Dashboard")
-    st.subheader(f"Welcome back, 👋 {user['name']}!")
+    st.markdown(
+        f'<div class="hl-hero"><div class="hl-kicker" style="color:#c5c0ff">Employer workspace</div>'
+        f'<h1>Build your team<br>with more clarity.</h1>'
+        f'<p>Welcome back, {escape(str(user["name"]))}. Create roles and review candidates with transparent, skills-first insights.</p></div>',
+        unsafe_allow_html=True,
+    )
 
     tab1, tab2 = st.tabs(["➕ Post a New Job", "📋 My Posted Jobs & Ranked Applicants"])
 
@@ -147,10 +154,7 @@ def render_employer_dashboard():
             )
 
             st.markdown("#### 🎯 Categorized Skill Priorities (Optional)")
-            st.caption(
-                "Scoring formula: **40% TF-IDF** + **40% Required** + **15% Preferred** + **5% Bonus**. "
-                "All three categories are optional. Old jobs without these fields continue to work."
-            )
+            st.caption("Separate must-have skills from helpful experience and extra strengths.")
             col_s1, col_s2, col_s3 = st.columns(3)
             with col_s1:
                 req_skills = st.text_input(
@@ -210,11 +214,14 @@ def render_employer_dashboard():
                     if job.get("required_skills") or job.get("preferred_skills") or job.get("bonus_skills"):
                         st.markdown("**Skill Priorities:**")
                         if job.get("required_skills"):
-                            st.write(f"- **Required:** `{job['required_skills']}`")
+                            st.caption("Required")
+                            skill_chips(job["required_skills"], "required")
                         if job.get("preferred_skills"):
-                            st.write(f"- **Preferred:** `{job['preferred_skills']}`")
+                            st.caption("Preferred")
+                            skill_chips(job["preferred_skills"], "preferred")
                         if job.get("bonus_skills"):
-                            st.write(f"- **Bonus:** `{job['bonus_skills']}`")
+                            st.caption("Bonus")
+                            skill_chips(job["bonus_skills"], "bonus")
 
                     st.markdown("---")
                     st.markdown("#### 🔍 Search & Filter Applicants")
@@ -327,8 +334,7 @@ def render_employer_dashboard():
 
                                 with col2:
                                     score_val = app["match_score"]
-                                    st.metric(label="Match Score", value=f"{score_val}%")
-                                    st.progress(float(score_val) / 100.0)
+                                    score_visual(score_val, "Match score")
 
                                     # Recommendation badge
                                     rec = match_info.get("recommendation", {})

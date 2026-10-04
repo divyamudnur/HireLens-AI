@@ -1,4 +1,5 @@
 import streamlit as st
+from html import escape
 from auth.roles import get_current_user
 from jobs.job_manager import (
     get_all_jobs,
@@ -11,6 +12,7 @@ from utils.helpers import save_uploaded_resume
 from ai.resume_parser import extract_text_from_pdf
 from ai.text_processor import process_resume_text
 from ai.quality import assess_resume_quality
+from utils.ui import score_visual, skill_chips
 
 
 def _render_candidate_match_feedback(match_info: dict, app: dict) -> None:
@@ -24,6 +26,15 @@ def _render_candidate_match_feedback(match_info: dict, app: dict) -> None:
     feedback = match_info.get("candidate_feedback", "")
 
     # Resume quality warning for candidate
+    if quality:
+        st.markdown(
+            f'<div class="hl-panel"><strong>📄 Resume quality</strong><br>'
+            f'<span>{escape(str(quality.get("icon", "")))} '
+            f'{escape(str(quality.get("level", "UNKNOWN")))}</span> · '
+            f'{quality.get("word_count", 0)} words · '
+            f'{quality.get("skill_count", 0)} skills detected</div>',
+            unsafe_allow_html=True,
+        )
     if quality and quality.get("warning"):
         st.warning(quality["warning"])
 
@@ -41,14 +52,19 @@ def render_candidate_dashboard():
         st.error("User session expired. Please log in again.")
         return
 
-    st.title("🎯 Candidate Dashboard")
-    st.subheader(f"Welcome back, 👋 {user['name']}!")
+    st.markdown(
+        f'<div class="hl-hero"><div class="hl-kicker" style="color:#c5c0ff">Candidate workspace</div>'
+        f'<h1>Your next opportunity<br>starts here, {escape(str(user["name"]))}.</h1>'
+        '<p>Explore roles, share your resume, and follow every application from one clear workspace.</p></div>',
+        unsafe_allow_html=True,
+    )
 
     tab1, tab2 = st.tabs(["💼 Browse Available Jobs", "📋 My Applications"])
 
     # ── TAB 1: BROWSE JOBS ────────────────────────────────────────────────
     with tab1:
-        st.subheader("Available Job Openings")
+        st.subheader("Explore open roles")
+        st.caption("Find a role that fits your skills and direction.")
         jobs = get_all_jobs()
 
         if not jobs:
@@ -59,23 +75,27 @@ def render_candidate_dashboard():
                     f"📌 {job['title']} — {job['company']} ({job.get('location') or 'Remote'})",
                     expanded=False
                 ):
-                    st.write(f"**Company:** {job['company']}")
-                    st.write(f"**Location:** {job.get('location') or 'Remote'}")
-                    st.write(f"**Posted By:** {job['employer_name']}")
-                    st.write(f"**Posted On:** {job['created_at']}")
-                    st.markdown("---")
-                    st.markdown("**Job Description:**")
+                    st.markdown(
+                        f"<div class='hl-kicker'>{escape(str(job['company']))} · "
+                        f"{escape(str(job.get('location') or 'Remote'))}</div>",
+                        unsafe_allow_html=True,
+                    )
+                    st.caption(f"Posted by {job['employer_name']} · {job['created_at']}")
+                    st.markdown("#### About the role")
                     st.write(job["description"])
 
                     # Show public skill requirements (no scoring weights exposed)
                     if job.get("required_skills") or job.get("preferred_skills") or job.get("bonus_skills"):
-                        st.markdown("**Skills Sought:**")
+                        st.markdown("**Skills sought**")
                         if job.get("required_skills"):
-                            st.write(f"- **Required:** {job['required_skills']}")
+                            st.caption("Required")
+                            skill_chips(job["required_skills"], "required")
                         if job.get("preferred_skills"):
-                            st.write(f"- **Preferred:** {job['preferred_skills']}")
+                            st.caption("Preferred")
+                            skill_chips(job["preferred_skills"], "preferred")
                         if job.get("bonus_skills"):
-                            st.write(f"- **Bonus:** {job['bonus_skills']}")
+                            st.caption("Bonus")
+                            skill_chips(job["bonus_skills"], "bonus")
 
                     st.markdown("---")
 
@@ -84,9 +104,9 @@ def render_candidate_dashboard():
                     if already_applied:
                         st.success("✅ You have already applied for this job.")
                     else:
-                        st.subheader("Apply for this Position")
+                        st.markdown("#### Ready to apply?")
                         uploaded_file = st.file_uploader(
-                            f"Upload PDF Resume for '{job['title']}'",
+                            f"Resume PDF for {job['title']}",
                             type=["pdf"],
                             key=f"resume_upload_{job['id']}"
                         )
@@ -176,10 +196,8 @@ def render_candidate_dashboard():
                         else:
                             st.info(f"**{status_display}**")
                     with col3:
-                        st.write("**AI Match Score:**")
                         score_val = app["match_score"]
-                        st.metric(label="Match Score", value=f"{score_val}%")
-                        st.progress(float(score_val) / 100.0)
+                        score_visual(score_val, "Match score")
 
                 # Candidate-facing feedback (privacy-safe)
                 if match_info and not match_info.get("error"):
